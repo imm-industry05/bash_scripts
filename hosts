@@ -1,4 +1,4 @@
-ip  hosts
+ip-hosts
 192.168.0.10 tier1_webserver
 192.168.0.21 tier2_app1
 192.168.0.22 tier2_app2

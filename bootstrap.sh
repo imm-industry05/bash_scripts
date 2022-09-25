@@ -3,7 +3,7 @@
 hostname=`hostname`
 ipv4=`hostname -I`
 jumpserver="192.168.0.250\/32"
-webhook="https://hooks.slack.com/services/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"
+
 
 
 update_packages() {
@@ -16,7 +16,7 @@ update_packages() {
     echo -e "[INFO] Cloning bash_scripts configuration"
         rm -rf bash_scripts
         git clone https://github.com/imm-industry05/bash_scripts.git bash_scripts
-        sed -i "s/ip hosts/${ipv4} ${hostname}/g"  bash_scripts/hosts
+        sed "s/ip-hosts/${ipv4} ${hostname}/g"  bash_scripts/hosts
         cat bash_scripts/hosts > /etc/hosts
         
 }
@@ -38,18 +38,6 @@ tier1() {
                 systemctl start nginx
         fi
     
-    # echo -e "[INFO] Denying ALL Hosts...."
-    #     cat  bash_scripts/hosts.deny > /etc/hosts.deny
-
-    # echo -e "[INFO] Allowing ${jumpserver} on ${hostname}"
-    #     sed -i "s/sshd: ipv4/sshd: ${jumpserver}/g"  bash_scripts/hosts.allow
-    #     cat bash_scripts/hosts.allow > /etc/hosts.allow
-
-    # echo -e "[INFO] Restarting sshd service..."
-    #     systemctl restart sshd
-    
-    # echo -e  "[INFO] Checkin hosts.allow"
-    #     cat /etc/hosts.allow
 
     echo -e "[INFO] Allowing http and https service."
         firewall-cmd --zone=public --permanent --add-service=https
@@ -70,16 +58,6 @@ tier2() {
     echo -e "[INFO] Install httpd on ${hostname}"
         yum install -y httpd
     
-    # echo -e "[INFO] Denying ALL Hosts...."
-    #     cat  bash_scripts/hosts.deny > /etc/hosts.deny
-
-    # echo -e "[INFO] Allowing ${jumpserver} on ${hostname}"
-    #     sed -i "s/sshd: ipv4/sshd: ${jumpserver}/g"  bash_scripts/hosts.allow
-    #     cat bash_scripts/hosts.allow > /etc/hosts.allow
-    
-    # echo -e  "[INFO] Checkin hosts.allow"
-    #     cat /etc/hosts.allow
-
     echo -e "[INFO] Allowing http and https service."
         firewall-cmd --zone=public --permanent --add-service=https
         firewall-cmd --zone=public --permanent --add-service=http
@@ -107,15 +85,6 @@ tier3() {
     echo -e "[INFO] Starting mariadb-server server"
         systemctl start mariadb
     
-    # echo -e "[INFO] Denying ALL Hosts...."
-    #     cat  bash_scripts/hosts.deny > /etc/hosts.deny
-
-    # echo -e "[INFO] Allowing ${jumpserver} on ${hostname}"
-    #     sed -i "s/sshd: ipv4/sshd: ${jumpserver}/g"  bash_scripts/hosts.allow
-    #     cat bash_scripts/hosts.allow > /etc/hosts.allow
-    
-    # echo -e  "[INFO] Checkin hosts.allow"
-    #     cat /etc/hosts.allow
 
     echo -e "[INFO] Allowing MySQL Ports."
         firewall-cmd --zone=public --permanent --add-port=3306/tcp
@@ -143,19 +112,6 @@ nfs() {
         systemctl start nfs-lock
         systemctl start nfs-idmap
 
-    # echo -e "[INFO] Cloning bash_scripts configuration"
-    #     rm -rf bash_scripts
-    #     git clone https://github.com/imm-industry05/bash_scripts.git bash_scripts
-    
-    # echo -e "[INFO] Denying ALL Hosts...."
-    #     cat  bash_scripts/hosts.deny > /etc/hosts.deny
-
-    # echo -e "[INFO] Allowing ${jumpserver} on ${hostname}"
-    #     sed -i "s/sshd: ipv4/sshd: ${jumpserver}/g"  bash_scripts/hosts.allow
-    #     cat bash_scripts/hosts.allow > /etc/hosts.allow
-    
-    # echo -e  "[INFO] Checkin hosts.allow"
-    #     cat /etc/hosts.allow
 
     echo -e "[INFO] Allowing http and https service."
         firewall-cmd --permanent --zone=public --add-service=nfs
