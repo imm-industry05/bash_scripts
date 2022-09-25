@@ -60,7 +60,7 @@ case ${hostname} in
     tier1-webserver.local.com)
         tier1
         ;;
-    tier2-app1.local.com || tier2-app2.local.com)
+    tier2-app1.local.com | tier2-app2.local.com)
         tier2
         ;;
     tier3-db.local.com)
