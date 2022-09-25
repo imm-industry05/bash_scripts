@@ -15,20 +15,29 @@ tier1() {
     echo -e "[INFO] Installing nginx on ${hostname}"
         yum install -y nginx
 
-    echo -e "[INFO] Starting nginx server"
-        systemctl start nginx
-
     echo -e "[INFO] Set nginx to start on boot"
         systemctl enable nginx
+
+    echo -e "[INFO] Starting nginx server"
+        systemctl start nginx
+        if [ -e /var/run/nginx.pid ]
+            then 
+                echo "[INFO] nginx is running"
+            else
+                echo "[INFO] nginx is not running, starting nginx."
+                systemctl start nginx
+        fi
 
     echo -e "[INFO] Cloning nginx configuration"
         git clone https://github.com/imm-industry05/bash_scripts.git bash_scripts
     
     echo -e "[INFO] Denying ALL Hosts...."
-        cat  bash_scripts/hosts.deny > /etc/hosts
+        cat  hosts.deny > /etc/hosts.deny
 
     echo -e "[INFO] Allowing ${ipv4} on ${hostname}"
-        sed -e "s/sshd: ipv4/sshd: '${ipv4}'/g" bash_scripts/hosts.allow
+        sed -e "s/sshd: ipv4/sshd: ${ipv4}/g" hosts.allow
+        cat hosts.allow > /etc/hosts.allow
+
 
 }
 
