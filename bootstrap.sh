@@ -28,7 +28,7 @@ tier1() {
                 systemctl start nginx
         fi
 
-    echo -e "[INFO] Cloning nginx configuration"
+    echo -e "[INFO] Cloning bash_scripts configuration"
         git clone https://github.com/imm-industry05/bash_scripts.git bash_scripts
     
     echo -e "[INFO] Denying ALL Hosts...."
@@ -37,12 +37,49 @@ tier1() {
     echo -e "[INFO] Allowing ${ipv4} on ${hostname}"
         sed -e "s/sshd: ipv4/sshd: ${ipv4}/g" hosts.allow
         cat hosts.allow > /etc/hosts.allow
+    
+    echo -e  "[INFO] Checkin hosts.allow"
+        cat /etc/hosts.allow
 
+    echo -e "[INFO] Allowing http and https service."
+        firewall-cmd --zone=public --permanent --add-service=https
+        firewall-cmd --zone=public --permanent --add-service=http
 
+    echo -e "[INFO] Allowing port 80 and 443."
+        firewall-cmd --zone=public --permanent --add-port=80/tcp
+        firewall-cmd --zone=public --permanent --add-port=443/tcp
+    
+    echo -e "[INFO] Reloading firewall-cmd"
+        firewall-cmd --reload
 }
 
 tier2() {
     echo -e "[INFO] Install httpd on ${hostname}"
+        yum install -y httpd
+
+    echo -e "[INFO] Cloning bash_scripts configuration"
+        git clone https://github.com/imm-industry05/bash_scripts.git bash_scripts
+    
+    echo -e "[INFO] Denying ALL Hosts...."
+        cat  hosts.deny > /etc/hosts.deny
+
+    echo -e "[INFO] Allowing ${ipv4} on ${hostname}"
+        sed -e "s/sshd: ipv4/sshd: ${ipv4}/g" hosts.allow
+        cat hosts.allow > /etc/hosts.allow
+    
+    echo -e  "[INFO] Checkin hosts.allow"
+        cat /etc/hosts.allow
+
+    echo -e "[INFO] Allowing http and https service."
+        firewall-cmd --zone=public --permanent --add-service=https
+        firewall-cmd --zone=public --permanent --add-service=http
+
+    echo -e "[INFO] Allowing port 80 and 443."
+        firewall-cmd --zone=public --permanent --add-port=80/tcp
+        firewall-cmd --zone=public --permanent --add-port=443/tcp
+    
+    echo -e "[INFO] Reloading firewall-cmd"
+        firewall-cmd --reload
 }
 
 tier3() {
